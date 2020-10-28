@@ -3,8 +3,7 @@ import random
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from polls.models import Subject
-
+from polls.models import Subject, Teachers
 
 
 def show_index(request):
@@ -32,9 +31,15 @@ def show_subjects(request:HttpResponse):
 
 
 def show_teachers(request: HttpResponse) -> HttpResponse:
-    teachers = None
+    sno = request.GET.get('sno')
+    teachers = []
+    if sno:
+        # QuerySet
+        subject = Subject.objects.get(no=sno)
+        teachers = Teachers.objects.filter(subject__no=sno).order_by('no')
     return render(request, 'teachers.html',{
-        'teachers': teachers
+        'teachers': teachers,
+        'subject': subject
     })
 
 

@@ -53,30 +53,30 @@
 </head>
 <body>
     <div id="container">
-        <h1>Python全栈+人工智能学科的老师信息</h1>
+        <h1>{{ subject.name }}学科的老师信息</h1>
         <hr>
+        {% for teacher in teachers %}
         <div class="teacher">
             <div class="photo">
-                <img src="images/luohao.png" height="140" alt="">
+                <img src="/static/images/{{ teacher.photo }}" height="140" alt="">
             </div>
             <div class="info">
-                {% for teacher in teahcers %}
                 <div>
                     <span><strong>姓名：{{ teacher.name }}</strong></span>
-                    <span>性别：{{ teacher.sex }}</span>
+                    <span>性别：{{ teacher.sex | yesno:'男,女' }}</span>
                     <span>出生日期：{{ teacher.birth }}</span>
                 </div>
                 <div class="intro">
                     {{ teacher.intro }}
                 </div>
                 <div class="comment">
-                    <a href="">好评</a>&nbsp;&nbsp;(<strong>100</strong>)
+                    <a href="">好评</a>&nbsp;&nbsp;(<strong>{{ teacher.good_count }}</strong>)
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="">差评</a>&nbsp;&nbsp;(<strong>50</strong>)
+                    <a href="">差评</a>&nbsp;&nbsp;(<strong>{{ teacher.bad_count }}</strong>)
                 </div>
-                {% endfor %}
             </div>
         </div>
+        {% endfor %}
     </div>
 </body>
 </html>
