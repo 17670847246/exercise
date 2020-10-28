@@ -1,7 +1,7 @@
 import random
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from polls.models import Subject, Teachers
 
@@ -31,17 +31,39 @@ def show_subjects(request:HttpResponse):
 
 
 def show_teachers(request: HttpResponse) -> HttpResponse:
-    sno = request.GET.get('sno')
-    teachers = []
-    if sno:
-        # QuerySet
-        subject = Subject.objects.get(no=sno)
-        teachers = Teachers.objects.filter(subject__no=sno).order_by('no')
-    return render(request, 'teachers.html',{
-        'teachers': teachers,
-        'subject': subject
-    })
+    try:
+        sno = int(request.GET.get('sno'))
+        teachers = []
+        if sno:
+            # QuerySet
+            subject = Subject.objects.only('name').get(no=sno)
+            teachers = Teachers.objects.filter(subject=subject).order_by('no')
+        return render(request, 'teachers.html',{
+            'teachers': teachers,
+            'subject': subject
+        })
+    except (ValueError, Subject.DoesNotExist):
+        return redirect('/')    # redirect 重定向
 
 
+def praise(request:HttpResponse) -> HttpResponse:
+    try:
+        sno = request.GET.get('sno')
+        tno = request.GET.get('tno')
+        teacher = Teachers.objects.get(no=tno)
+        teacher.good_count += 1
+        teacher.save()
+        return redirect(f'/teachers/?sno={sno}')
+    except ValueError:
+        return redirect('/')
 
-
+def bad(request:HttpResponse) -> HttpResponse:
+    try:
+        sno = request.GET.get('sno')
+        tno = request.GET.get('tno')
+        teacher = Teachers.objects.get(no=tno)
+        teacher.bad_count += 1
+        teacher.save()
+        return redirect(f'/teachers/?sno={sno}')
+    except ValueError:
+        return redirect('/')

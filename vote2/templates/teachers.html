@@ -55,6 +55,9 @@
     <div id="container">
         <h1>{{ subject.name }}学科的老师信息</h1>
         <hr>
+        {% if not teachers %}
+            <h2>暂无该学科老师信息</h2>
+        {% endif %}
         {% for teacher in teachers %}
         <div class="teacher">
             <div class="photo">
@@ -70,13 +73,14 @@
                     {{ teacher.intro }}
                 </div>
                 <div class="comment">
-                    <a href="">好评</a>&nbsp;&nbsp;(<strong>{{ teacher.good_count }}</strong>)
+                    <a href="/praise/?sno={{ subject.no }}&tno={{ teacher.no }}">好评</a>&nbsp;&nbsp;(<strong>{{ teacher.good_count }}</strong>)
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="">差评</a>&nbsp;&nbsp;(<strong>{{ teacher.bad_count }}</strong>)
+                    <a href="/bad/?sno={{ subject.no }}&tno={{ teacher.no }}">差评</a>&nbsp;&nbsp;(<strong>{{ teacher.bad_count }}</strong>)
                 </div>
             </div>
         </div>
         {% endfor %}
+        <a href="/">返回首页</a>
     </div>
 </body>
 </html>
