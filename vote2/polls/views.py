@@ -46,24 +46,18 @@ def show_teachers(request: HttpResponse) -> HttpResponse:
         return redirect('/')    # redirect 重定向
 
 
-def praise(request:HttpResponse) -> HttpResponse:
+def praise_or_criticize(request:HttpResponse) -> HttpResponse:
+    print(request.path)
     try:
-        sno = request.GET.get('sno')
-        tno = request.GET.get('tno')
+        sno = int(request.GET.get('sno'))
+        tno = int(request.GET.get('tno'))
         teacher = Teachers.objects.get(no=tno)
-        teacher.good_count += 1
+        if request.path.startswith('/praisse/'):
+            teacher.good_count += 1
+        else:
+            teacher.bad_count += 1
         teacher.save()
         return redirect(f'/teachers/?sno={sno}')
     except ValueError:
         return redirect('/')
 
-def bad(request:HttpResponse) -> HttpResponse:
-    try:
-        sno = request.GET.get('sno')
-        tno = request.GET.get('tno')
-        teacher = Teachers.objects.get(no=tno)
-        teacher.bad_count += 1
-        teacher.save()
-        return redirect(f'/teachers/?sno={sno}')
-    except ValueError:
-        return redirect('/')
