@@ -73,9 +73,9 @@
                     {{ teacher.intro }}
                 </div>
                 <div class="comment">
-                    <a href="/praise/?sno={{ subject.no }}&tno={{ teacher.no }}">好评</a>&nbsp;&nbsp;(<strong>{{ teacher.good_count }}</strong>)
+                    <a href="/praise/?tno={{ teacher.no }}">好评</a>&nbsp;&nbsp;(<strong>{{ teacher.good_count }}</strong>)
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="/bad/?sno={{ subject.no }}&tno={{ teacher.no }}">差评</a>&nbsp;&nbsp;(<strong>{{ teacher.bad_count }}</strong>)
+                    <a href="/bad/?tno={{ teacher.no }}">差评</a>&nbsp;&nbsp;(<strong>{{ teacher.bad_count }}</strong>)
                 </div>
             </div>
         </div>

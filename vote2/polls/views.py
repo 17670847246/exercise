@@ -1,3 +1,4 @@
+import json
 import random
 
 from django.http import HttpResponse
@@ -49,15 +50,18 @@ def show_teachers(request: HttpResponse) -> HttpResponse:
 def praise_or_criticize(request:HttpResponse) -> HttpResponse:
     print(request.path)
     try:
-        sno = int(request.GET.get('sno'))
         tno = int(request.GET.get('tno'))
         teacher = Teachers.objects.get(no=tno)
         if request.path.startswith('/praisse/'):
             teacher.good_count += 1
+            count = teacher.good_count
         else:
             teacher.bad_count += 1
+            count = teacher.bad_count
         teacher.save()
-        return redirect(f'/teachers/?sno={sno}')
+        data = {'code': 8888, 'mesg': '投票成功', 'count': count}
     except ValueError:
-        return redirect('/')
+        data = {'code': 9999, 'mesg': '投票失败'}
+    # json.dumps(data)  dict --> str
+    return  HttpResponse(json.dumps(data), content_type='application/json')
 
