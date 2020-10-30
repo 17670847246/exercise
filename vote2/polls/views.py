@@ -1,7 +1,7 @@
 import json
 import random
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from polls.models import Subject, Teachers
@@ -48,11 +48,10 @@ def show_teachers(request: HttpResponse) -> HttpResponse:
 
 
 def praise_or_criticize(request:HttpResponse) -> HttpResponse:
-    print(request.path)
     try:
         tno = int(request.GET.get('tno'))
         teacher = Teachers.objects.get(no=tno)
-        if request.path.startswith('/praisse/'):
+        if request.path.startswith('/praise/'):
             teacher.good_count += 1
             count = teacher.good_count
         else:
@@ -63,5 +62,5 @@ def praise_or_criticize(request:HttpResponse) -> HttpResponse:
     except ValueError:
         data = {'code': 9999, 'mesg': '投票失败'}
     # json.dumps(data)  dict --> str
-    return  HttpResponse(json.dumps(data), content_type='application/json')
-
+    # return  HttpResponse(json.dumps(data), content_type='application/json; charset=utf8')
+    return JsonResponse(data)

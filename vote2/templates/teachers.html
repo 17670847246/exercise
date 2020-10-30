@@ -82,5 +82,30 @@
         {% endfor %}
         <a href="/">返回首页</a>
     </div>
+    <script>
+        // document对象的querySelector / querySelectorAll方法可以通过CSS选择器获取页面元素
+        let anchors = document.querySelectorAll('.comment>a')
+        // 通过循环为a标签绑定点击事件
+        for (let i=0; i< anchors.length; ++i) {
+            // 通过addEventListener添加事件监听器（绑定事件回调函数）
+            anchors[i].addEventListener('click', (evt) => {
+                // 阻止事件默认行为
+                evt.preventDefault()
+                // 获取异步请求的地址（URL）
+                let url = evt.target.href
+                // 向服务器发出异步请求 Promise对象
+                fetch(url).then(resp => resp.json()).then(json => {
+                    // 获取到服务器返回的JSON格式的数据，对页面进行局部刷新
+                    if (json.code === 8888) {
+                        // 通过a标签的nextElementSibling属性获取旁边的strong标签
+                        let strong = evt.target.nextElementSibling
+                        strong.textContent = json.count
+                    }else{
+                        alert(json.mesg)
+                    }
+                })
+            })
+        }
+    </script>
 </body>
 </html>
