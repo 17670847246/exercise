@@ -64,3 +64,13 @@ def praise_or_criticize(request:HttpResponse) -> HttpResponse:
     # json.dumps(data)  dict --> str
     # return  HttpResponse(json.dumps(data), content_type='application/json; charset=utf8')
     return JsonResponse(data)
+
+
+def login(request:HttpResponse) -> HttpResponse:
+    """登入"""
+    return render(request, 'login.html')
+
+
+def register(request: HttpResponse) -> HttpResponse:
+    """注册"""
+    return render(request, 'register.html')
