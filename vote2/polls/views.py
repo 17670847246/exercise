@@ -4,6 +4,7 @@ import random
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
+from polls.captcha import Captcha
 from polls.models import Subject, Teachers
 
 
@@ -64,6 +65,11 @@ def praise_or_criticize(request:HttpResponse) -> HttpResponse:
     # json.dumps(data)  dict --> str
     # return  HttpResponse(json.dumps(data), content_type='application/json; charset=utf8')
     return JsonResponse(data)
+
+
+def get_captcha(request: HttpResponse) -> HttpResponse:
+    image_data = Captcha.instance().generate('1Qaz')
+    return HttpResponse(image_data, content_type='image/png')
 
 
 def login(request:HttpResponse) -> HttpResponse:
