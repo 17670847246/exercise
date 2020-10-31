@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 
 from polls.captcha import Captcha
 from polls.models import Subject, Teachers
+from polls.utils import gen_code
 
 
 def show_index(request):
@@ -68,7 +69,8 @@ def praise_or_criticize(request:HttpResponse) -> HttpResponse:
 
 
 def get_captcha(request: HttpResponse) -> HttpResponse:
-    image_data = Captcha.instance().generate('1Qaz')
+    code = gen_code()
+    image_data = Captcha.instance().generate(code)
     return HttpResponse(image_data, content_type='image/png')
 
 
