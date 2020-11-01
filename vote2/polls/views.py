@@ -5,8 +5,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from polls.captcha import Captcha
-from polls.models import Subject, Teachers
-from polls.utils import gen_code
+from polls.models import Subject, Teachers, User
+from polls.utils import gen_code, gen_md5_digest
 
 
 def show_index(request):
@@ -76,9 +76,26 @@ def get_captcha(request: HttpResponse) -> HttpResponse:
 
 def login(request:HttpResponse) -> HttpResponse:
     """登入"""
-    return render(request, 'login.html')
+    hint = ''
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username and password:
+            password = gen_md5_digest(password)
+            user = User.objects.filter(username=username, password=password).first()
+            if user:
+                pass
+            else:
+                hint = '用户或密码错误'
+        else:
+            hint = '请输入有效的用户名'
+    return render(request, 'login.html', {
+        'hint': hint
+    })
 
 
 def register(request: HttpResponse) -> HttpResponse:
     """注册"""
+    if request.method == 'POST':
+        pass
     return render(request, 'register.html')

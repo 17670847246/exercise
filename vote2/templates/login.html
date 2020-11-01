@@ -38,13 +38,19 @@
             text-align: center;
             margin-top: 20px;
         }
+        .hint {
+            color: red;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
     <div id="container">
         <h1>用户登录</h1>
         <hr>
-        <form action="" method="post">
+        <p class="hint">{{ hint }}</p>
+        <form action="/login/" method="post">
+            {% csrf_token %}
             <fieldset>
                 <legend>用户信息</legend>
                 <div class="input">
@@ -71,11 +77,19 @@
             <a href="/register/">注册新用户</a>
         </div>
     </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $('#code').on('click', evt => {
+            $(evt.target).attr('src', '/captcha/?' + Math.random())
+        })
+    </script>
+    <!--
     <script>
         let codeImage = document.querySelector('#code')
         codeImage.addEventListener('click', (evt) => {
             evt.target.src = '/captcha/?' + Math.random()
         })
     </script>
+    -->
 </body>
 </html>
