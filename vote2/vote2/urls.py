@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 
-from polls.views import show_subjects, show_teachers, praise_or_criticize, login, register, get_captcha
+from polls.views import show_subjects, show_teachers, praise_or_criticize, login, register, get_captcha, logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +26,7 @@ urlpatterns = [
     path('praise/', praise_or_criticize),
     path('bad/', praise_or_criticize),
     path('login/', login),
+    path('logout/', logout),
     path('register/', register),
     path('captcha/', get_captcha),
 ]

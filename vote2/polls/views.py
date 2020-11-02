@@ -83,8 +83,11 @@ def login(request:HttpResponse) -> HttpResponse:
         if username and password:
             password = gen_md5_digest(password)
             user = User.objects.filter(username=username, password=password).first()
+            print(user)
             if user:
-                pass
+                request.session['userid'] = user.no
+                request.session['username'] = user.username
+                return redirect('/')
             else:
                 hint = '用户或密码错误'
         else:
@@ -93,6 +96,10 @@ def login(request:HttpResponse) -> HttpResponse:
         'hint': hint
     })
 
+
+def logout(request: HttpResponse) -> HttpResponse:
+    request.session.flush()
+    return redirect('/')
 
 def register(request: HttpResponse) -> HttpResponse:
     """注册"""

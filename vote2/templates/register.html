@@ -44,7 +44,7 @@
         <h1>用户注册</h1>
         <hr>
         <form action="/regester/" method="post">
-            {% crsf_token %}
+            {% csrf_token %}
             <fieldset>
                 <legend>用户信息</legend>
                 <div class="input">
