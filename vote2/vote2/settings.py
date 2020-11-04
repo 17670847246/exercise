@@ -127,4 +127,5 @@ USE_TZ = True
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATIC_URL = '/static/'
 
-
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # 窗口关了sessionid就没了
+SESSION_COOKIE_AGE = 86440         #设置多久后没有

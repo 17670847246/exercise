@@ -1,7 +1,10 @@
-import json
-import random
 
-from django.http import HttpResponse, JsonResponse
+import random
+from urllib.parse import unquote
+
+from django.core.cache import caches
+from django.db import DatabaseError
+from django.http import HttpResponse, JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
 
 from polls.captcha import Captcha
@@ -50,19 +53,22 @@ def show_teachers(request: HttpResponse) -> HttpResponse:
 
 
 def praise_or_criticize(request:HttpResponse) -> HttpResponse:
-    try:
-        tno = int(request.GET.get('tno'))
-        teacher = Teachers.objects.get(no=tno)
-        if request.path.startswith('/praise/'):
-            teacher.good_count += 1
-            count = teacher.good_count
-        else:
-            teacher.bad_count += 1
-            count = teacher.bad_count
-        teacher.save()
-        data = {'code': 8888, 'mesg': '投票成功', 'count': count}
-    except ValueError:
-        data = {'code': 9999, 'mesg': '投票失败'}
+    if request.session.get('userid'):
+        try:
+            tno = int(request.GET.get('tno'))
+            teacher = Teachers.objects.get(no=tno)
+            if request.path.startswith('/praise/'):
+                teacher.good_count += 1
+                count = teacher.good_count
+            else:
+                teacher.bad_count += 1
+                count = teacher.bad_count
+            teacher.save()
+            data = {'code': 8888, 'mesg': '投票成功', 'count': count}
+        except ValueError:
+            data = {'code': 9999, 'mesg': '投票失败'}
+    else:
+        data = {'code': 20002, 'mesg': '请先登入'}
     # json.dumps(data)  dict --> str
     # return  HttpResponse(json.dumps(data), content_type='application/json; charset=utf8')
     return JsonResponse(data)
@@ -70,6 +76,7 @@ def praise_or_criticize(request:HttpResponse) -> HttpResponse:
 
 def get_captcha(request: HttpResponse) -> HttpResponse:
     code = gen_code()
+    request.session['captcha'] = code.lower()
     image_data = Captcha.instance().generate(code)
     return HttpResponse(image_data, content_type='image/png')
 
@@ -77,29 +84,38 @@ def get_captcha(request: HttpResponse) -> HttpResponse:
 def login(request:HttpResponse) -> HttpResponse:
     """登入"""
     hint = ''
+    returnurl = request.GET.get('returnurl', '/')
+    if returnurl != '/':
+        # 将百分号编码还原原始的字符串
+        returnurl = unquote(returnurl)
+        print(returnurl)
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if username and password:
-            password = gen_md5_digest(password)
-            user = User.objects.filter(username=username, password=password).first()
-            print(user)
-            if user:
-                request.session['userid'] = user.no
-                request.session['username'] = user.username
-                return redirect('/')
+        captcha_from_serv = request.session.get('captcha', '0')
+        captcha_from_user = request.POST.get('captcha', '1').lower()
+        if captcha_from_serv == captcha_from_user:
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            if username and password:
+                password = gen_md5_digest(password)
+                user = User.objects.filter(username=username, password=password).first()
+                if user:
+                    request.session['userid'] = user.no
+                    request.session['username'] = user.username
+                    returnurl = request.POST.get('returnurl', '/')
+                    return redirect(returnurl)
+                else:
+                    hint = '用户或密码错误'
             else:
-                hint = '用户或密码错误'
+                hint = '请输入有效的用户名'
         else:
-            hint = '请输入有效的用户名'
-    return render(request, 'login.html', {
-        'hint': hint
-    })
+            hint = '请输入有效的验证码'
+    return render(request, 'login.html', {'hint': hint, 'returnurl': returnurl})
 
 
 def logout(request: HttpResponse) -> HttpResponse:
     request.session.flush()
     return redirect('/')
+
 
 def register(request: HttpResponse) -> HttpResponse:
     """注册"""
