@@ -55,7 +55,7 @@ class User(models.Model):
     username = models.CharField(max_length=20, unique=True, verbose_name='用户名')
     # 用户密码在数据库中需要保存为对应的哈希摘要（签名、指纹）
     password = models.CharField(max_length=32, verbose_name='密码')
-    tel = models.CharField(max_length=20, verbose_name='手机号码')
+    tel = models.CharField(max_length=20, unique=True, verbose_name='手机号码')
     reg_date = models.DateTimeField(auto_now_add=True, verbose_name='注册时间')
     last_visit = models.DateTimeField(null=True, verbose_name='最后登入时间')
 

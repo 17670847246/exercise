@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 
 
-from polls.views import show_subjects, show_teachers, praise_or_criticize, login, register, get_captcha, logout
+from polls.views import show_subjects, show_teachers, praise_or_criticize, login, register, get_captcha, logout, \
+    send_mobile_code
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,5 +30,9 @@ urlpatterns = [
     path('logout/', logout),
     path('register/', register),
     path('captcha/', get_captcha),
+    # /mobile/?tel=31423432515
+    # path('mobile/', send_mobile_code),
+    # /mobile/3153253125/
+    path('mobile/<str:tel>/', send_mobile_code),
 ]
 
