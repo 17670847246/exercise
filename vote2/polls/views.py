@@ -2,8 +2,9 @@
 import random
 from urllib.parse import unquote
 
-from django.core.cache import caches
+
 from django.db import DatabaseError
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
 
@@ -98,7 +99,7 @@ def login(request:HttpRequest) -> HttpResponse:
             password = request.POST.get('password')
             if check_username(username) and check_password(password):
                 password = gen_md5_digest(password)
-                user = User.objects.filter(username=username, password=password).first()
+                user = User.objects.filter(Q(username=username) | Q(tel=username)).filter(password=password).first()
                 if user:
                     request.session['userid'] = user.no
                     request.session['username'] = user.username

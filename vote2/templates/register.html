@@ -99,19 +99,15 @@
         })
 
         $('input[name=username]').on('blur', evt => {
-            let username = $(evt.target). val().trim()
-            if (/\w{6,20}/.test(username)/) {
-                $.getJSON('/check/?username=' +username, json => {
-                    let span = $(evt.target).next().text('')
-                    if (json.code === 30000) {
-                        span.css('color', 'green').text('√')
-                    } else {
-                        span.css('color', 'red').text('×')
-                    }
-                })
-            } else {
-                alert('用户名由字母、数字、下划线构成、长度为6-20个字符')
-            }
+            let username = $(evt.target).val().trim()
+            $.getJSON('/check/?username=' + username, json => {
+                let span = $(evt.target).next().text('')
+                if (json.code === 30000) {
+                    span.css('color', 'green').text('√')
+                } else{
+                    span.css('color', 'red').text('×')
+                }
+            })
         })
     </script>
 </body>
