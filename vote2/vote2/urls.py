@@ -18,7 +18,7 @@ from django.urls import path
 
 
 from polls.views import show_subjects, show_teachers, praise_or_criticize, login, register, get_captcha, logout, \
-    send_mobile_code
+    send_mobile_code, is_unique_username
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,5 +34,6 @@ urlpatterns = [
     # path('mobile/', send_mobile_code),
     # /mobile/3153253125/
     path('mobile/<str:tel>/', send_mobile_code),
+    path('check/', is_unique_username)
 ]
 

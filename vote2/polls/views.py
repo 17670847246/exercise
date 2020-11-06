@@ -167,8 +167,7 @@ def is_unique_username(request: HttpRequest) -> HttpResponse:
     """检查用户名唯一性"""
     username = request.GET.get('username')
     if check_username(username):
-        user = User.objects.filter(username=username).only().first()
-        if user:
+        if User.objects.filter(username=username).exists():
             data = {'code': 30001, 'message': '用户名已被注册'}
         else:
             data = {'code': 30000, 'message': '用户名可以使用'}
